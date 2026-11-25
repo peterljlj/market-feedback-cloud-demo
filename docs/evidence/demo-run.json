@@ -1,0 +1,168 @@
+{
+  "scope": "Single Cloud task; script-level reproduction. Account label is operator supplied.",
+  "publish_acceptance": "Not run in an Enterprise workspace.",
+  "run": {
+    "account_label": "A",
+    "observed_at_utc": "2026-11-25T09:51:41+00:00",
+    "commit": "f6701aca16f39b49583ef6e2f1166c43c18e3cc5",
+    "python_version": "3.12.14",
+    "tests": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "-v"
+      ],
+      "rules_override": null,
+      "exit_code": 0,
+      "stderr": "test_duplicate_between_markets_or_submissions_is_blocked (tests.test_feedback_check.FeedbackCheckTests.test_duplicate_between_markets_or_submissions_is_blocked) ... ok\ntest_missing_headers_or_values_block_summary (tests.test_feedback_check.FeedbackCheckTests.test_missing_headers_or_values_block_summary) ... ok\ntest_new_rules_accept_new_and_previous_labels (tests.test_feedback_check.FeedbackCheckTests.test_new_rules_accept_new_and_previous_labels) ... ok\ntest_v1_accepts_original_market_files (tests.test_feedback_check.FeedbackCheckTests.test_v1_accepts_original_market_files) ... ok\ntest_v1_blocks_new_label (tests.test_feedback_check.FeedbackCheckTests.test_v1_blocks_new_label) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.003s\n\nOK\n"
+    },
+    "active_environment": {
+      "command": [
+        "python3",
+        "verify_environment.py",
+        "--expect",
+        "v2"
+      ],
+      "rules_override": null,
+      "exit_code": 2,
+      "stderr": "Set FEEDBACK_RULES_FILE to rules/v2.json in the environment configuration.\n"
+    },
+    "au_v1": {
+      "command": [
+        "python3",
+        "feedback_check.py",
+        "samples/au-revised.csv"
+      ],
+      "rules_override": "rules/v1.json",
+      "exit_code": 1,
+      "result": {
+        "input_fingerprints": {
+          "au-revised.csv": "3fc638ba555e"
+        },
+        "issues": [
+          "au-revised.csv:2: label 'refill_compatibility' is absent from v1",
+          "au-revised.csv:3: label 'refill_compatibility' is absent from v1"
+        ],
+        "market_label_counts": null,
+        "rule_version": "v1",
+        "rules_fingerprint": "76f86e31bd5e",
+        "status": "BLOCKED"
+      }
+    },
+    "au_v2": {
+      "command": [
+        "python3",
+        "feedback_check.py",
+        "samples/au-revised.csv"
+      ],
+      "rules_override": "rules/v2.json",
+      "exit_code": 0,
+      "result": {
+        "input_fingerprints": {
+          "au-revised.csv": "3fc638ba555e"
+        },
+        "issues": [],
+        "market_label_counts": {
+          "AU": {
+            "refill_compatibility": 2,
+            "scent": 1
+          }
+        },
+        "rule_version": "v2",
+        "rules_fingerprint": "0728e7536859",
+        "status": "READY_FOR_REVIEW"
+      }
+    },
+    "regional_v2": {
+      "command": [
+        "python3",
+        "feedback_check.py",
+        "samples/uk.csv",
+        "samples/sg.csv",
+        "samples/au-revised.csv"
+      ],
+      "rules_override": "rules/v2.json",
+      "exit_code": 0,
+      "result": {
+        "input_fingerprints": {
+          "au-revised.csv": "3fc638ba555e",
+          "sg.csv": "07c549c70896",
+          "uk.csv": "0d9a17e816eb"
+        },
+        "issues": [],
+        "market_label_counts": {
+          "AU": {
+            "refill_compatibility": 2,
+            "scent": 1
+          },
+          "SG": {
+            "availability": 1,
+            "packaging": 1,
+            "scent": 1
+          },
+          "UK": {
+            "availability": 1,
+            "packaging": 1,
+            "scent": 1
+          }
+        },
+        "rule_version": "v2",
+        "rules_fingerprint": "0728e7536859",
+        "status": "READY_FOR_REVIEW"
+      }
+    },
+    "repository_check": "PASS"
+  },
+  "prepare_check": {
+    "check": "PASS",
+    "scope": "repository configuration",
+    "environment_config_name": "market-feedback-pilot",
+    "commit": "f6701aca16f39b49583ef6e2f1166c43c18e3cc5",
+    "release_check": {
+      "environment_check": "PASS",
+      "sample_result": {
+        "input_fingerprints": {
+          "au-revised.csv": "3fc638ba555e"
+        },
+        "issues": [],
+        "market_label_counts": {
+          "AU": {
+            "refill_compatibility": 2,
+            "scent": 1
+          }
+        },
+        "rule_version": "v2",
+        "rules_fingerprint": "0728e7536859",
+        "status": "READY_FOR_REVIEW"
+      }
+    },
+    "regional_result": {
+      "input_fingerprints": {
+        "au-revised.csv": "3fc638ba555e",
+        "sg.csv": "07c549c70896",
+        "uk.csv": "0d9a17e816eb"
+      },
+      "issues": [],
+      "market_label_counts": {
+        "AU": {
+          "refill_compatibility": 2,
+          "scent": 1
+        },
+        "SG": {
+          "availability": 1,
+          "packaging": 1,
+          "scent": 1
+        },
+        "UK": {
+          "availability": 1,
+          "packaging": 1,
+          "scent": 1
+        }
+      },
+      "rule_version": "v2",
+      "rules_fingerprint": "0728e7536859",
+      "status": "READY_FOR_REVIEW"
+    }
+  }
+}

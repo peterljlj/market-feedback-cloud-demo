@@ -1,0 +1,66 @@
+{
+  "kind": "Codex Cloud team collaboration environment",
+  "name": "market-feedback-pilot",
+  "description": "团队协作 Cloud Environment｜英国、新加坡、澳洲消费者反馈试点",
+  "publication": {
+    "personal": {
+      "account_plans": ["Plus", "Business", "Enterprise"],
+      "who_can_use": "Only me"
+    },
+    "shared": {
+      "required_workspace_plan": "Enterprise",
+      "who_can_use": "target Enterprise workspace",
+      "member_permission": "Use Codex in the cloud",
+      "maintainer_permission": "Manage workspace environments"
+    }
+  },
+  "repository": {
+    "full_name": "peterljlj/market-feedback-cloud-demo",
+    "pilot_ref": "main",
+    "working_directory": "repository root"
+  },
+  "runtime": {
+    "language": "Python 3",
+    "external_dependencies": [],
+    "environment_variables": {
+      "FEEDBACK_RULES_FILE": "rules/v2.json"
+    },
+    "network": {
+      "policy": "inherit workspace policy",
+      "required_repository_provider": "GitHub",
+      "vpn_required": false,
+      "http_secrets_required": false
+    }
+  },
+  "pilot": {
+    "account_verification_participants": 2,
+    "workflow_participants": 5,
+    "roles": {
+      "environment_maintainer": 1,
+      "uk_market_reviewer": 1,
+      "sg_market_reviewer": 1,
+      "au_market_reviewer": 1,
+      "regional_reviewer": 1
+    },
+    "scale_target_participants": [30, 50]
+  },
+  "acceptance": {
+    "rule_version": "v2",
+    "rule_fingerprint": "0728e7536859",
+    "samples": [
+      "samples/uk.csv",
+      "samples/sg.csv",
+      "samples/au-revised.csv"
+    ],
+    "input_fingerprints": {
+      "au-revised.csv": "3fc638ba555e",
+      "sg.csv": "07c549c70896",
+      "uk.csv": "0d9a17e816eb"
+    },
+    "market_label_counts": {
+      "AU": {"refill_compatibility": 2, "scent": 1},
+      "SG": {"availability": 1, "packaging": 1, "scent": 1},
+      "UK": {"availability": 1, "packaging": 1, "scent": 1}
+    }
+  }
+}

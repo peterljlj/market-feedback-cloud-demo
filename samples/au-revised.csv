@@ -1,0 +1,4 @@
+id,market,feedback,label
+AU-01,AU,The refill nozzle does not fit my original bottle.,refill_compatibility
+AU-02,AU,The refill would not seal against the original bottle.,refill_compatibility
+AU-03,AU,The fragrance is a little strong.,scent

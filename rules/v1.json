@@ -1,0 +1,9 @@
+{
+  "version": "v1",
+  "markets": ["UK", "SG", "AU"],
+  "labels": {
+    "packaging": "Packaging usability, including refill issues in v1.",
+    "scent": "Comments about fragrance or intensity.",
+    "availability": "Comments about finding or buying the product."
+  }
+}

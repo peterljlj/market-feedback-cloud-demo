@@ -1,0 +1,10 @@
+{
+  "version": "v2",
+  "markets": ["UK", "SG", "AU"],
+  "labels": {
+    "packaging": "General packaging usability. Retain existing v1 annotations until a market reviewer rechecks their meaning.",
+    "scent": "Comments about fragrance or intensity.",
+    "availability": "Comments about finding or buying the product.",
+    "refill_compatibility": "A refill does not fit, seal, or connect to the original bottle."
+  }
+}

@@ -3,10 +3,6 @@
   "name": "market-feedback-pilot",
   "description": "团队协作 Cloud Environment｜英国、新加坡、澳洲消费者反馈试点",
   "publication": {
-    "personal": {
-      "account_plans": ["Plus", "Business", "Enterprise"],
-      "who_can_use": "Only me"
-    },
     "shared": {
       "required_workspace_plan": "Enterprise",
       "who_can_use": "target Enterprise workspace",

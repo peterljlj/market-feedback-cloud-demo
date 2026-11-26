@@ -1,53 +1,59 @@
-# Codex Cloud 试点配置和验收
+# 发布 Enterprise 共享 Codex Cloud Environment
 
-本仓库的代码和 9 条样例供 Plus、Business 和 Enterprise 共用。Cloud 访问取决于账号资格、产品开放和工作区设置。[套餐说明](https://help.openai.com/en/articles/11369540-using-codex-with-your-chatgpt-plan)
+目标是由维护者给工作区发布一套 `market-feedback-pilot` 环境。获准成员各自新建 Codex 任务，继承同一仓库和 v2 规则配置。当前仓库提供配置清单和可运行的验收脚本，实际 Enterprise 发布与双账号共享尚待目标工作区验证。
 
-## 通用配置
+## 配置工作区权限
 
-| 项目 | 填写内容 |
+请管理员在 **Admin Console → Permissions & roles** 检查试点账号。
+
+| 角色 | 权限与职责 |
+| --- | --- |
+| A · 维护者 | `Use Codex in the cloud` 和 `Manage workspace environments`。负责创建、发布、更新及回退环境。 |
+| B · 普通市场成员 | `Use Codex in the cloud`，可以使用共享环境执行任务。由管理员核对 B 的环境管理权限，试点普通成员不授予该权限。 |
+
+两人需进入同一个 Enterprise 工作区，并使用工作区允许的 GitHub 连接。对其他私有项目，仓库访问仍需各自授权。[OpenAI 权限说明](https://learn.chatgpt.com/docs/enterprise/roles-and-workspace-permissions#review-codex-cloud-access-and-environment-administration)
+
+## 创建、准备和发布
+
+A 在网页或桌面打开 **Settings → Codex Cloud → Environments → Create environment**。也可以在新任务中打开 **Work in → Cloud → Select environment → Create environment**。选择仓库后进入准备对话。
+
+| 配置项 | 本项目填写 |
 | --- | --- |
 | 环境名称 | `market-feedback-pilot` |
-| 仓库与引用 | `peterljlj/market-feedback-cloud-demo` 的 `main`，两人实际验收时核对同一 Git 提交 |
-| 运行依赖 | Python 3 标准库，无额外依赖或启动服务 |
-| Environment variables | `FEEDBACK_RULES_FILE=rules/v2.json`，在环境配置自身的变量中保存 |
-| 网络 | 使用工作区允许的 GitHub 连接。本演示不需要 VPN 或 HTTP secrets。接入内网库存系统时另行确认网络和数据权限。 |
-| 配置文件 | [market-feedback-pilot.json](../cloud/market-feedback-pilot.json)，供审核与仓库脚本读取。发布和共享范围在 Codex 界面设置。 |
+| Repository | `peterljlj/market-feedback-cloud-demo`，演示分支 `main` |
+| 运行依赖 | Python 3 标准库。项目根目录包含 `feedback_check.py`，无需启动其他服务。 |
+| Environment variables → Manage | 在环境设置中保存 `FEEDBACK_RULES_FILE=rules/v2.json`，这是共同的分类规则路径。 |
+| 网络 | 遵守工作区网络设置并允许使用 GitHub。本演示无需 VPN 或 HTTP secrets。 |
+| Privacy → Who can use | 选择目标 Enterprise 工作区，并核对实际可用范围。 |
+| 配置清单 | [market-feedback-pilot.json](../cloud/market-feedback-pilot.json) 用于审阅和仓库验收，发布操作通过 Codex 界面完成。 |
 
-## 现在就能做的 Plus / Business 路径
-
-1. 在有 Codex Cloud 的账号里新开任务，使用 **Work in → Cloud**，选择公开演示仓库。进入项目根目录运行下列命令。Plus 或 Business 都能用同一份代码执行。
-
-   ```sh
-   python3 -m unittest -v
-   python3 scripts/check_team_cloud_environment.py --prepare
-   ```
-
-2. 如果要演示个人环境复用，从 **Settings → Codex Cloud → Environments → Create environment** 创建环境，按上表填好仓库和变量，保留个人范围 **Only me**，点 **Publish**。另开一个新聊天并选中这个环境，直接运行末尾的验收命令。
-3. Business 中由同事用自己的账号启动另一个任务，并检出相同提交。各自运行准备检查，比较提交、规则指纹、输入指纹和输出。要演示个人环境，两人可分别按第 2 步配置。
-4. 业务交接可由 A 充当区域负责人，B 检查澳洲样例并交付 v2 结果、两条待复核记录和跟进角色，A 合并三地批次并检查重复记录。用于实际工作时，共享结果可放在团队批准的位置，虚构展示样例可以放在 GitHub。
-
-## Enterprise 工作区共享路径
-
-1. 管理员在 **Permissions & roles** 给维护者和普通成员开通 `Use Codex in the cloud`，给维护者开通 `Manage workspace environments`。管理员同时核对工作区网络策略与成员可用范围。
-2. 维护者用同一份仓库、规则和变量创建环境。在 **Privacy → Who can use** 选择目标 Enterprise 工作区并 **Publish**。配置中的访问范围、管理权限及可用网络策略取决于目标工作区。
-3. 两人用各自账号进入同一工作区。分别在环境选择器选择同一已发布环境，各自启动新任务并运行验收命令。由操作者记录实际发布版本、环境名和 Git 提交，核对规则指纹及结果。
-4. 维护者更新规则或配置后重新发布，成员从新任务取得更新。回退演练可将变量设为 `rules/v1.json` 后重新发布，从新任务直接运行 `python3 verify_environment.py --expect v1`。预期环境检查 `PASS`，两条新标签被拦截。演练后恢复 v2。
-5. 先以两位成员验证共享入口，再由维护者、三地负责人和区域负责人完成五人演练。要扩到 30–50 人，再测同时间窗口实际任务数、完成率、排队、配额和上手耗时。[OpenAI 共享环境及角色说明](https://learn.chatgpt.com/docs/environments/cloud-environments#share-within-an-enterprise-workspace)
-
-## 发布后的验收命令
-
-在选中的新任务直接运行，配置从已发布环境继承。
+在准备阶段运行以下命令，检查原有单元测试及 v2 的样例结果。
 
 ```sh
-python3 scripts/check_team_cloud_environment.py
+python3 -m unittest -v
+python3 scripts/check_team_cloud_environment.py --prepare
 ```
 
-通过时输出 `check: PASS`、`scope: active task configuration`、Git 提交及三地结果。预期规则指纹 `0728e7536859`、澳洲输入指纹 `3fc638ba555e`，9 条记录进入复核，其中两条为澳洲补充装兼容性。若变量缺少或仍指向 v1，检查会退出 2。平台是否共享成功还要由两个账号从环境选择器核对同一发布版本。
+核对仓库、变量和共享范围后点击 **Publish**，确认已发布。已经发布的环境可以在编辑页更新共享范围。[OpenAI 创建和发布说明](https://learn.chatgpt.com/docs/environments/cloud-environments#create-and-publish-an-environment) · [共享范围说明](https://learn.chatgpt.com/docs/environments/cloud-environments#share-within-an-enterprise-workspace)
 
-| 权限或步骤 | 遇到问题时先检查 |
-| --- | --- |
-| 同事看不到共享环境 | Enterprise 工作区、环境发布状态与共享范围；成员是否获准使用 Codex Cloud |
-| 仓库不可选 | GitHub 连接与工作区仓库策略。对于后续私有项目，再检查成员自己的仓库权限。 |
-| 找不到 Skill / Agent | 在目标客户端实测发现和调用。仓库包含 `check-market-feedback` Skill 文件与两份可选 Agent 配置。 |
+## 用两个账号验收已发布的环境
 
-文件结构保留 [环境配置](../cloud/market-feedback-pilot.json)、[执行和验收脚本](../scripts/)、[自动测试](../tests/) 与 [实跑证据](evidence/demo-run.json)。需要验证 v1 和 v2 对同一输入的行为时，可执行 `python3 scripts/run_business_acceptance.py --account A`。账号标签由操作者填写。
+1. A 和 B 分别登录，切换到同一 Enterprise 工作区。在新任务里从 **Work in → Cloud** 选择同一个已发布环境。
+2. 两人在仓库根目录直接运行下列命令，让验收读取新任务从发布配置继承的变量。
+
+   ```sh
+   python3 scripts/check_team_cloud_environment.py
+   ```
+
+3. 两份输出均应为 `check: PASS` 和 `scope: active task configuration`。确认实际 Git 提交相同，规则指纹为 `0728e7536859`，澳洲修订样例输入指纹为 `3fc638ba555e`，三地合计 9 条，其中澳洲兼容性 2 条。
+4. 每人记录实际工作区、环境名称、发布版本或时间和输出。A 验证维护权限，B 验证可启动任务。两人的结果相符后，才算完成共享环境验收。[验收记录表](validation.md#enterprise-共享验收)
+
+市场负责人在支持 Skill 的客户端可以选用 `check-market-feedback`，指定自己要检查的 CSV。Skill 发现与调用、可选 Agent 角色的发现与调用均需在目标客户端分别记录。
+
+## 更新、回退和扩员
+
+- **发布新规则。** 在 GitHub 审核规则变更，记录提交。在 **Settings → Codex Cloud → Environments → Edit** 更新并 **Republish**，从新任务验收。已有任务保留自己的工作状态。
+- **回退演练。** 将环境变量改为 `rules/v1.json`，重新发布后从新任务直接运行 `python3 verify_environment.py --expect v1`。预期环境检查通过，澳洲修订表的两条新标签被拦截。演练完恢复 v2。
+- **环境在选择器里不可见。** 检查登录的工作区、共享范围、发布状态及成员的 Cloud 使用权限。能看到环境但打不开项目时，再检查 GitHub 连接和仓库访问。
+- **验收退出 2。** 检查发布配置中的 v2 变量是否正确、任务是否来自正确的环境。修正后重新发布，再开新任务验收。
+- **先五人，再扩员。** 双账号入口验收后，按五人分工完成一次交接。扩大到 30–50 人前，测实际同时启动的任务数、成功率、排队、配额和首次交付用时。[业务流程](../README.md#enterprise-共享环境怎样协作)

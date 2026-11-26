@@ -36,7 +36,7 @@ def main():
             if env.get(key) != value:
                 raise ValueError(f"Set {key}={value} in the Cloud environment, then start a new task.")
         release = check(["verify_environment.py", "--expect", expected["rule_version"]], env)
-        regional = check(["feedback_check.py", *expected["samples"]], env)
+        regional = release["sample_result"]
         coverage = check(["feedback_review.py", *expected["samples"]], env)
         expected_fields = {
             "status": "READY_FOR_REVIEW",

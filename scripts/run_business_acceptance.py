@@ -43,7 +43,7 @@ def main():
     account = parser.parse_args().account
     config = json.loads((ROOT / "cloud/market-feedback-pilot.json").read_text(encoding="utf-8"))
     expected = config["acceptance"]
-    original_batches = [*expected["samples"][:-1], "samples/au.csv"]
+    original_batches = expected["original_samples"]
     evidence = {
         "account_label": account,
         "observed_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -71,6 +71,7 @@ def main():
     v2 = evidence["au_v2"].get("result", {})
     regional = evidence["regional_v2"].get("result", {})
     regional_counts = expected["market_label_counts"]
+    au_case_count = regional_counts["AU"]["refill_compatibility"]
     au_input = {Path(AU_SAMPLE).name: expected["input_fingerprints"][Path(AU_SAMPLE).name]}
     case_ids = expected["coverage_case_ids"]
     v1_flags = evidence["coverage_v1"].get("result", {}).get("flags", [])
@@ -81,7 +82,7 @@ def main():
         and v1.get("status") == "BLOCKED"
         and v1.get("rules_fingerprint") == "76f86e31bd5e"
         and v1.get("input_fingerprints") == au_input
-        and len(v1.get("issues", [])) == len(case_ids)
+        and len(v1.get("issues", [])) == au_case_count
         and evidence["au_v2"]["exit_code"] == 0
         and v2.get("status") == "READY_FOR_REVIEW"
         and v2.get("rules_fingerprint") == expected["rule_fingerprint"]

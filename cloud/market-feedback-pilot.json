@@ -38,26 +38,59 @@
       "au_market_reviewer": 1,
       "regional_reviewer": 1
     },
-    "scale_target_participants": [30, 50]
+    "scale_target_participants": [
+      30,
+      50
+    ]
   },
   "acceptance": {
     "rule_version": "v2",
     "rule_fingerprint": "0728e7536859",
-    "coverage_case_ids": ["AU-01", "AU-02", "AU-04", "AU-05", "AU-06"],
+    "coverage_case_ids": [
+      "UK-05",
+      "UK-13",
+      "SG-05",
+      "SG-13",
+      "AU-01",
+      "AU-02",
+      "AU-04",
+      "AU-05",
+      "AU-06"
+    ],
     "samples": [
-      "samples/uk.csv",
-      "samples/sg.csv",
+      "samples/uk-revised.csv",
+      "samples/sg-revised.csv",
       "samples/au-revised.csv"
     ],
     "input_fingerprints": {
-      "au-revised.csv": "bdab67962844",
-      "sg.csv": "d97206686f60",
-      "uk.csv": "8aaba2ca3a35"
+      "uk-revised.csv": "bfc9267cc804",
+      "sg-revised.csv": "1c3ca615fde6",
+      "au-revised.csv": "bdab67962844"
     },
     "market_label_counts": {
-      "AU": {"availability": 3, "packaging": 3, "refill_compatibility": 5, "scent": 4},
-      "SG": {"availability": 5, "packaging": 5, "scent": 5},
-      "UK": {"availability": 5, "packaging": 5, "scent": 5}
-    }
+      "AU": {
+        "refill_compatibility": 5,
+        "scent": 4,
+        "packaging": 3,
+        "availability": 3
+      },
+      "SG": {
+        "packaging": 3,
+        "scent": 5,
+        "availability": 5,
+        "refill_compatibility": 2
+      },
+      "UK": {
+        "packaging": 3,
+        "scent": 5,
+        "availability": 5,
+        "refill_compatibility": 2
+      }
+    },
+    "original_samples": [
+      "samples/uk.csv",
+      "samples/sg.csv",
+      "samples/au.csv"
+    ]
   }
 }

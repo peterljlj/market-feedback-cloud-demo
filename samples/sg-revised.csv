@@ -1,0 +1,16 @@
+id,market,feedback,label
+SG-01,SG,The pump is tricky with wet hands.,packaging
+SG-02,SG,味道清淡，我喜欢。,scent
+SG-03,SG,The refill was sold out this week.,availability
+SG-04,SG,The pump dispensed too much in one press.,packaging
+SG-05,SG,补充装的接头装不进原瓶，倒的时候会从接口漏出来。,refill_compatibility
+SG-06,SG,The outer carton arrived dented.,packaging
+SG-07,SG,The floral scent lingered for a long time.,scent
+SG-08,SG,香味太浓了，不适合我。,scent
+SG-09,SG,I would buy the unscented option if it were available at my supermarket.,availability
+SG-10,SG,The refill was out of stock on the online store.,availability
+SG-11,SG,附近两家店都没有卖大瓶装。,availability
+SG-12,SG,The small bottle was only available online.,availability
+SG-13,SG,The refill connector would not seal on the original pump bottle.,refill_compatibility
+SG-14,SG,The fresh scent was pleasant.,scent
+SG-15,SG,The fragrance smelled sweeter than expected.,scent

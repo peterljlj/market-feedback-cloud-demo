@@ -45,15 +45,15 @@ python3 scripts/check_team_cloud_environment.py --prepare
    python3 scripts/check_team_cloud_environment.py
    ```
 
-3. 两份输出均应为 `check: PASS` 和 `scope: active task configuration`。确认实际 Git 提交相同，规则指纹为 `0728e7536859`，澳洲修订样例输入指纹为 `bdab67962844`，三地合计 45 条，其中澳洲兼容性 5 条。
+3. 两份输出均应为 `check: PASS` 和 `scope: active task configuration`。确认实际 Git 提交相同，规则指纹为 `0728e7536859`，三地合计 45 条。兼容性应为英国 2 条、新加坡 2 条、澳大利亚 5 条。
 4. 每人记录实际工作区、环境名称、发布版本或时间和输出。A 验证维护权限，B 验证可启动任务。两人的结果相符后，才算完成共享环境验收。[验收记录表](validation.md#enterprise-共享验收)
 
-市场负责人在支持项目 Skill 的客户端选中 `check-market-feedback`，例如说「检查 `samples/au.csv` 的现有标签，列出需要人工复核的反馈 ID、旧标签和匹配词」。在 v2 环境里，原始澳洲表应返回 5 条 `LABEL_MISMATCH`。再请对方检查同一批的 `samples/au-revised.csv`，应无兼容性提示。A、B 分别记录 Skill 是否可见、有无实际运行命令和返回结果。可选 Agent 角色的发现与调用需另行记录。
+市场负责人在支持项目 Skill 的客户端选中 `check-market-feedback`，例如说「检查 `samples/uk.csv`、`samples/sg.csv`、`samples/au.csv` 的现有标签，按市场列出需要复核的 ID 和匹配词」。v2 下预期英国、新加坡各 2 条，澳洲 5 条 `LABEL_MISMATCH`。改查同一批的 `*-revised.csv`，应无剩余兼容性提示。A、B 分别记录 Skill 是否可见、实际运行命令和结果。可选 Agent 角色的发现与调用另行记录。
 
 ## 更新、回退和扩员
 
 - **发布新规则。** 澳洲市场负责人提案，区域负责人审批业务口径，维护者提交 GitHub 并记录提交。在 **Settings → Codex Cloud → Environments → Edit** 更新并 **Republish**，从新任务验收。已有任务保留自己的工作状态。
-- **回退演练。** 将同一个环境的变量改为 `rules/v1.json`，重新发布后从新任务直接运行 `python3 verify_environment.py --expect v1`。预期环境检查通过，澳洲修订表的 5 条新标签被拦截。用旧标注表运行 `feedback_review.py` 可复现这 5 条类别缺口。演练完恢复 v2。
+- **回退演练。** 将同一个环境的变量改为 `rules/v1.json`，重新发布后从新任务直接运行 `python3 verify_environment.py --expect v1`。预期环境检查通过，三地修订表的 9 条新标签被拦截。用旧标注表运行 `feedback_review.py` 可复现这 9 条类别缺口。演练完恢复 v2。
 - **环境在选择器里不可见。** 检查登录的工作区、共享范围、发布状态及成员的 Cloud 使用权限。能看到环境但打不开项目时，再检查 GitHub 连接和仓库访问。
 - **验收退出 2。** 检查发布配置中的 v2 变量是否正确、任务是否来自正确的环境。修正后重新发布，再开新任务验收。
 - **先五人，再扩员。** 双账号入口验收后，按五人分工完成一次交接。扩大到 30–50 人前，测实际同时启动的任务数、成功率、排队、配额和首次交付用时。[业务流程](../README.md#enterprise-共享环境怎样协作)

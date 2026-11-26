@@ -8,7 +8,8 @@ from feedback_review import review_batches
 
 PROJECT = Path(__file__).resolve().parent.parent
 MARKET_FILES = [PROJECT / 'samples' / f'{market}.csv' for market in ('uk', 'sg', 'au')]
-REVISED_AU = PROJECT / 'samples' / 'au-revised.csv'
+REVISED_FILES = [PROJECT / 'samples' / f'{market}-revised.csv' for market in ('uk', 'sg', 'au')]
+REVISED_AU = REVISED_FILES[-1]
 
 
 def check(version, files):
@@ -22,16 +23,19 @@ class FeedbackCheckTests(unittest.TestCase):
         self.assertEqual(result['market_label_counts']['AU']['packaging'], 8)
 
     def test_v1_blocks_new_label(self):
-        result = check('v1', [REVISED_AU])
+        result = check('v1', REVISED_FILES)
         self.assertEqual(result['status'], 'BLOCKED')
-        self.assertEqual(len(result['issues']), 5)
+        self.assertEqual(len(result['issues']), 9)
         self.assertIsNone(result['market_label_counts'])
 
     def test_new_rules_accept_new_and_previous_labels(self):
-        result = check('v2', [*MARKET_FILES[:2], REVISED_AU])
+        result = check('v2', REVISED_FILES)
         self.assertEqual(result['status'], 'READY_FOR_REVIEW')
         self.assertEqual(result['market_label_counts']['AU']['refill_compatibility'], 5)
-        self.assertEqual(result['market_label_counts']['UK']['packaging'], 5)
+        for market in ('UK', 'SG'):
+            self.assertEqual(result['market_label_counts'][market]['refill_compatibility'], 2)
+            self.assertEqual(result['market_label_counts'][market]['packaging'], 3)
+            self.assertEqual(result['market_label_counts'][market]['availability'], 5)
         self.assertEqual(check('v2', MARKET_FILES)['market_label_counts']['AU']['packaging'], 8)
 
     def test_duplicate_between_markets_or_submissions_is_blocked(self):
@@ -51,7 +55,10 @@ class FeedbackCheckTests(unittest.TestCase):
             self.assertIsNone(result['market_label_counts'])
 
     def test_coverage_review_distinguishes_gaps_from_legacy_labels(self):
-        expected_ids = ['AU-01', 'AU-02', 'AU-04', 'AU-05', 'AU-06']
+        expected_ids = [
+            'UK-05', 'UK-13', 'SG-05', 'SG-13',
+            'AU-01', 'AU-02', 'AU-04', 'AU-05', 'AU-06',
+        ]
         for version, expected_code in [('v1', 'COVERAGE_GAP'), ('v2', 'LABEL_MISMATCH')]:
             with self.subTest(version=version):
                 result = review_batches(PROJECT / 'rules' / f'{version}.json', MARKET_FILES)
@@ -60,6 +67,6 @@ class FeedbackCheckTests(unittest.TestCase):
                                  [(case_id, expected_code) for case_id in expected_ids])
 
     def test_coverage_review_does_not_flag_sold_out_or_leaking_original_bottle(self):
-        result = review_batches(PROJECT / 'rules' / 'v2.json', [*MARKET_FILES[:2], REVISED_AU])
+        result = review_batches(PROJECT / 'rules' / 'v2.json', REVISED_FILES)
         self.assertEqual(result['scanned_records'], 45)
         self.assertEqual(result['flags'], [])

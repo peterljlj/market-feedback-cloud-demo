@@ -4,6 +4,10 @@
 
 [下载 Excel 演示数据](https://raw.githubusercontent.com/peterljlj/market-feedback-cloud-demo/main/samples/market-feedback.xlsx) · [Enterprise 发布配置](docs/setup.md) · [实测与验收报告](docs/validation.md)
 
+[观看演示录屏（MP4）](https://raw.githubusercontent.com/peterljlj/market-feedback-cloud-demo/main/docs/demo/enterprise-cloud-demo.mp4) · [下载汇报 PPT](https://raw.githubusercontent.com/peterljlj/market-feedback-cloud-demo/main/docs/demo/enterprise-cloud-collaboration.pptx)
+
+录屏展示 v1 筛查和 v2 验收的实际运行过程，以及 Enterprise 环境设置、规则发布和五人交接的操作示意。
+
 **当前成果。** 两个真实账号已分别配置环境、连接同一个 GitHub 仓库并成功复跑前一版。它证明人员可以共用仓库协作，每个账号仍需分别配置环境。当前扩展版的 Excel、筛查 Skill、代码和 Enterprise 配置已做好并运行仓库检查。**Enterprise 的共享发布及 Skill 的跨账号调用待在目标工作区验证。**
 
 ## 三个市场在合作做什么

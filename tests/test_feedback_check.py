@@ -3,6 +3,7 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from feedback_check import check_batches
+from feedback_review import review_batches
 
 
 PROJECT = Path(__file__).resolve().parent.parent
@@ -18,25 +19,25 @@ class FeedbackCheckTests(unittest.TestCase):
     def test_v1_accepts_original_market_files(self):
         result = check('v1', MARKET_FILES)
         self.assertEqual(result['status'], 'READY_FOR_REVIEW')
-        self.assertEqual(result['market_label_counts']['AU']['packaging'], 2)
+        self.assertEqual(result['market_label_counts']['AU']['packaging'], 8)
 
     def test_v1_blocks_new_label(self):
         result = check('v1', [REVISED_AU])
         self.assertEqual(result['status'], 'BLOCKED')
-        self.assertEqual(len(result['issues']), 2)
+        self.assertEqual(len(result['issues']), 5)
         self.assertIsNone(result['market_label_counts'])
 
     def test_new_rules_accept_new_and_previous_labels(self):
         result = check('v2', [*MARKET_FILES[:2], REVISED_AU])
         self.assertEqual(result['status'], 'READY_FOR_REVIEW')
-        self.assertEqual(result['market_label_counts']['AU']['refill_compatibility'], 2)
-        self.assertEqual(result['market_label_counts']['UK']['packaging'], 1)
-        self.assertEqual(check('v2', MARKET_FILES)['market_label_counts']['AU']['packaging'], 2)
+        self.assertEqual(result['market_label_counts']['AU']['refill_compatibility'], 5)
+        self.assertEqual(result['market_label_counts']['UK']['packaging'], 5)
+        self.assertEqual(check('v2', MARKET_FILES)['market_label_counts']['AU']['packaging'], 8)
 
     def test_duplicate_between_markets_or_submissions_is_blocked(self):
         result = check('v2', [MARKET_FILES[2], REVISED_AU])
         self.assertEqual(result['status'], 'BLOCKED')
-        self.assertEqual(len(result['issues']), 3)
+        self.assertEqual(len(result['issues']), 15)
 
     def test_missing_headers_or_values_block_summary(self):
         with TemporaryDirectory() as directory:
@@ -48,3 +49,17 @@ class FeedbackCheckTests(unittest.TestCase):
             self.assertEqual(result['status'], 'BLOCKED')
             self.assertEqual(len(result['issues']), 2)
             self.assertIsNone(result['market_label_counts'])
+
+    def test_coverage_review_distinguishes_gaps_from_legacy_labels(self):
+        expected_ids = ['AU-01', 'AU-02', 'AU-04', 'AU-05', 'AU-06']
+        for version, expected_code in [('v1', 'COVERAGE_GAP'), ('v2', 'LABEL_MISMATCH')]:
+            with self.subTest(version=version):
+                result = review_batches(PROJECT / 'rules' / f'{version}.json', MARKET_FILES)
+                self.assertEqual(result['scanned_records'], 45)
+                self.assertEqual([(flag['id'], flag['code']) for flag in result['flags']],
+                                 [(case_id, expected_code) for case_id in expected_ids])
+
+    def test_coverage_review_does_not_flag_sold_out_or_leaking_original_bottle(self):
+        result = review_batches(PROJECT / 'rules' / 'v2.json', [*MARKET_FILES[:2], REVISED_AU])
+        self.assertEqual(result['scanned_records'], 45)
+        self.assertEqual(result['flags'], [])

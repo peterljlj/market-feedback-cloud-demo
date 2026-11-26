@@ -43,20 +43,21 @@
   "acceptance": {
     "rule_version": "v2",
     "rule_fingerprint": "0728e7536859",
+    "coverage_case_ids": ["AU-01", "AU-02", "AU-04", "AU-05", "AU-06"],
     "samples": [
       "samples/uk.csv",
       "samples/sg.csv",
       "samples/au-revised.csv"
     ],
     "input_fingerprints": {
-      "au-revised.csv": "3fc638ba555e",
-      "sg.csv": "07c549c70896",
-      "uk.csv": "0d9a17e816eb"
+      "au-revised.csv": "bdab67962844",
+      "sg.csv": "d97206686f60",
+      "uk.csv": "8aaba2ca3a35"
     },
     "market_label_counts": {
-      "AU": {"refill_compatibility": 2, "scent": 1},
-      "SG": {"availability": 1, "packaging": 1, "scent": 1},
-      "UK": {"availability": 1, "packaging": 1, "scent": 1}
+      "AU": {"availability": 3, "packaging": 3, "refill_compatibility": 5, "scent": 4},
+      "SG": {"availability": 5, "packaging": 5, "scent": 5},
+      "UK": {"availability": 5, "packaging": 5, "scent": 5}
     }
   }
 }

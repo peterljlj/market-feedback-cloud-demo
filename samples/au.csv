@@ -2,3 +2,15 @@ id,market,feedback,label
 AU-01,AU,The refill nozzle does not fit my original bottle.,packaging
 AU-02,AU,The refill would not seal against the original bottle.,packaging
 AU-03,AU,The fragrance is a little strong.,scent
+AU-04,AU,The refill cartridge was too wide for my original bottle.,packaging
+AU-05,AU,The refill connector did not lock into my bottle.,packaging
+AU-06,AU,The refill leaked where it meets the neck of the original bottle.,packaging
+AU-07,AU,The cap split while I was opening a new bottle.,packaging
+AU-08,AU,The pump on the bottle sticks when pressed.,packaging
+AU-09,AU,The unopened bottle cap was leaking in the parcel.,packaging
+AU-10,AU,The citrus scent faded quickly.,scent
+AU-11,AU,I liked the lighter fragrance.,scent
+AU-12,AU,The unscented bottle was sold out at my local shop.,availability
+AU-13,AU,The refill for my bottle was out of stock in two stores.,availability
+AU-14,AU,The large bottle was not available for pickup.,availability
+AU-15,AU,The new fragrance was milder than the previous one.,scent

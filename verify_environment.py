@@ -26,14 +26,16 @@ def main():
         parser.exit(2, f'Unexpected checker exit code {result.returncode}:\n{result.stderr or result.stdout}')
 
     report = json.loads(result.stdout)
+    specification = json.loads((PROJECT / 'cloud/market-feedback-pilot.json').read_text(encoding='utf-8'))
+    expected_cases = len(specification['acceptance']['coverage_case_ids'])
     if expected == 'v1':
-        correct = report['status'] == 'BLOCKED' and len(report['issues']) == 2 and all(
+        correct = report['status'] == 'BLOCKED' and len(report['issues']) == expected_cases and all(
             "label 'refill_compatibility' is absent from v1" in issue for issue in report['issues']
         )
     else:
         correct = (
             report['status'] == 'READY_FOR_REVIEW'
-            and report['market_label_counts'].get('AU', {}).get('refill_compatibility') == 2
+            and report['market_label_counts'].get('AU', {}).get('refill_compatibility') == expected_cases
         )
     if not correct or report['rule_version'] != expected:
         parser.exit(2, f'Unexpected rule version or validation result:\n{result.stdout}')

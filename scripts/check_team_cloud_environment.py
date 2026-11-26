@@ -37,6 +37,7 @@ def main():
                 raise ValueError(f"Set {key}={value} in the Cloud environment, then start a new task.")
         release = check(["verify_environment.py", "--expect", expected["rule_version"]], env)
         regional = check(["feedback_check.py", *expected["samples"]], env)
+        coverage = check(["feedback_review.py", *expected["samples"]], env)
         expected_fields = {
             "status": "READY_FOR_REVIEW",
             "rule_version": expected["rule_version"],
@@ -47,6 +48,8 @@ def main():
         for key, value in expected_fields.items():
             if regional.get(key) != value:
                 raise ValueError(f"Regional result for {key} differs from the repository configuration.")
+        if coverage["flags"]:
+            raise ValueError("Reviewed market batches still have unresolved coverage flags.")
     except (ValueError, subprocess.CalledProcessError) as error:
         parser.exit(2, f"Team Cloud check failed: {error}\n")
 
@@ -57,6 +60,7 @@ def main():
         "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "release_check": release,
         "regional_result": regional,
+        "reviewed_coverage": coverage,
     }, ensure_ascii=False, indent=2))
 
 

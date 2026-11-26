@@ -6,7 +6,7 @@
 
 [下载 Codex 实操录制手册（Word）](https://raw.githubusercontent.com/peterljlj/market-feedback-cloud-demo/main/docs/demo/codex-cloud-recording-guide.docx) · [下载详细汇报 PPT](https://raw.githubusercontent.com/peterljlj/market-feedback-cloud-demo/main/docs/demo/enterprise-cloud-collaboration.pptx)
 
-录制手册可在真实 Codex 界面照着操作，包含创建和发布环境、可复制的任务提示词、双账号复跑及 Enterprise 共享验收。汇报 PPT 展开业务背景、五人分工、环境配置、三地结果和扩员方案。
+现场演示由两段真实 Codex 操作组成。第一段用澳洲样例发现 v1 的分类缺口、启用已有 v2，并发出更新通知。第二段用新加坡样例接收通知、修改当地 CSV 并验证结果。**演示者负责环境配置和维护。澳洲与新加坡负责人是两个账号在录制中模拟的业务角色。** PPT 展示正式的 Enterprise 共享方案。
 
 **当前成果。** 两个真实账号已分别配置环境、连接同一个 GitHub 仓库并成功复跑前一版。它证明人员可以共用仓库协作，每个账号仍需分别配置环境。当前扩展版的 Excel、筛查 Skill、代码和 Enterprise 配置已做好并运行仓库检查。**Enterprise 的共享发布及 Skill 的跨账号调用待在目标工作区验证。**
 
@@ -41,6 +41,19 @@ Excel 的「区域汇总」和三个市场页可以查看或筛选这 45 条记�
 4. **环境维护者负责发布。** 将批准的规则和样例提交 GitHub、运行回归检查，再更新并重新发布同一个共享环境。区域负责人最后用同一规则汇总，分派当地渠道、库存与产品质量跟进。
 
 **v1 和 v2 是分类规则版本。** [v1](rules/v1.json) 包含一般包装、香味、购买可得性；[v2](rules/v2.json) 新增补充装兼容性。两份规则文件保留在同一个 GitHub 仓库。旧的环境配置指向 `rules/v1.json`；维护者把同一个命名环境的 `FEEDBACK_RULES_FILE` 改为 `rules/v2.json` 后重新发布，新任务继承新版。规则版本、Git 提交、Codex 环境发布版本分别记录。
+
+## 用两个账号录制一次规则更新接力
+
+录制前让两个账号都连接本仓库的 `main`。首次创建或自动准备建议提前完成，视频从已经可用的环境开始。两版规则和脚本均已在仓库里，录制时用已有规则完成一次切换和数据更新。
+
+| 视频与出镜身份 | 真实操作 | 镜头停留处 |
+| --- | --- | --- |
+| **视频一 · 账号 A**。先模拟澳洲负责人，再以环境维护者身份操作 | 从 A 的环境开任务，用生效的 v1 筛查 `samples/au.csv`。打开原环境的设置，把 `FEEDBACK_RULES_FILE` 从 `rules/v1.json` 改为 `rules/v2.json`，重新发布并开新任务。用新版复核五条，在任务里生成 `demo-output/au-reviewed.csv`。 | 旧表 15 条、5 条 `COVERAGE_GAP`。切换后五条成为 `LABEL_MISMATCH`。修订表校验通过，补充装兼容性 5 条、剩余提示 0。以维护者身份发出更新通知。 |
+| **视频二 · 账号 B**。模拟新加坡负责人 | 展示收到的通知。让 B 自己的环境指向同一仓库的 v2，重新发布并开新任务。让 Codex 用 v2 筛查 `samples/sg.csv`，人工确认后生成 `demo-output/sg-reviewed.csv`，只修改 `SG-05`、`SG-13` 两个标签。 | 展示 CSV 改动和真实命令输出。新加坡 15 条、补充装兼容性 2 条、剩余提示 0。`SG-03` 的补充装售罄仍是购买可得性。以市场负责人身份回报结果。 |
+
+**两段用一条通知衔接。** 由演示者通过现有团队沟通渠道或第二段开场的文字卡传递，比如「市场反馈分类已更新到 `rules/v2.json`。请新加坡用新版复核 `samples/sg.csv`，保留原表和原文，提交修订表，并回报规则版本、改动 ID 和校验结果。」两个新任务各自读取环境设置。仓库中的 `*-revised.csv` 可留作核对参考，录制时从各自的旧表实际生成修订文件。
+
+这两段展示现有账号如何用同一仓库接力。**当前两个账号各自维护环境配置；Enterprise 方案由维护者重新发布一次，成员各自从同一个共享环境开新任务。** [逐步操作与可复制提示词（Word）](https://raw.githubusercontent.com/peterljlj/market-feedback-cloud-demo/main/docs/demo/codex-cloud-recording-guide.docx)
 
 ## Enterprise 如何用同一个环境和 Skill
 

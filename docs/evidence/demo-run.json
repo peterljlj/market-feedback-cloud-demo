@@ -1,0 +1,437 @@
+{
+  "scope": "Single Cloud task; script-level reproduction on 45 fictional records.",
+  "publish_acceptance": "Enterprise environment publication and multi-account Skill invocation not tested.",
+  "run": {
+    "account_label": "A",
+    "observed_at_utc": "2026-11-26T04:35:36+00:00",
+    "commit": "8cec769118f454d72d69b1c0b0ffca6e0d78ea59",
+    "python_version": "3.12.14",
+    "tests": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "-v"
+      ],
+      "rules_override": null,
+      "exit_code": 0,
+      "stderr": "test_coverage_review_distinguishes_gaps_from_legacy_labels (tests.test_feedback_check.FeedbackCheckTests.test_coverage_review_distinguishes_gaps_from_legacy_labels) ... ok\ntest_coverage_review_does_not_flag_sold_out_or_leaking_original_bottle (tests.test_feedback_check.FeedbackCheckTests.test_coverage_review_does_not_flag_sold_out_or_leaking_original_bottle) ... ok\ntest_duplicate_between_markets_or_submissions_is_blocked (tests.test_feedback_check.FeedbackCheckTests.test_duplicate_between_markets_or_submissions_is_blocked) ... ok\ntest_missing_headers_or_values_block_summary (tests.test_feedback_check.FeedbackCheckTests.test_missing_headers_or_values_block_summary) ... ok\ntest_new_rules_accept_new_and_previous_labels (tests.test_feedback_check.FeedbackCheckTests.test_new_rules_accept_new_and_previous_labels) ... ok\ntest_v1_accepts_original_market_files (tests.test_feedback_check.FeedbackCheckTests.test_v1_accepts_original_market_files) ... ok\ntest_v1_blocks_new_label (tests.test_feedback_check.FeedbackCheckTests.test_v1_blocks_new_label) ... ok\n\n----------------------------------------------------------------------\nRan 7 tests in 0.004s\n\nOK\n"
+    },
+    "active_environment": {
+      "command": [
+        "python3",
+        "verify_environment.py",
+        "--expect",
+        "v2"
+      ],
+      "rules_override": null,
+      "exit_code": 2,
+      "stderr": "Set FEEDBACK_RULES_FILE to rules/v2.json in the environment configuration.\n"
+    },
+    "au_v1": {
+      "command": [
+        "python3",
+        "feedback_check.py",
+        "samples/au-revised.csv"
+      ],
+      "rules_override": "rules/v1.json",
+      "exit_code": 1,
+      "result": {
+        "input_fingerprints": {
+          "au-revised.csv": "bdab67962844"
+        },
+        "issues": [
+          "au-revised.csv:2: label 'refill_compatibility' is absent from v1",
+          "au-revised.csv:3: label 'refill_compatibility' is absent from v1",
+          "au-revised.csv:5: label 'refill_compatibility' is absent from v1",
+          "au-revised.csv:6: label 'refill_compatibility' is absent from v1",
+          "au-revised.csv:7: label 'refill_compatibility' is absent from v1"
+        ],
+        "market_label_counts": null,
+        "rule_version": "v1",
+        "rules_fingerprint": "76f86e31bd5e",
+        "status": "BLOCKED"
+      }
+    },
+    "au_v2": {
+      "command": [
+        "python3",
+        "feedback_check.py",
+        "samples/au-revised.csv"
+      ],
+      "rules_override": "rules/v2.json",
+      "exit_code": 0,
+      "result": {
+        "input_fingerprints": {
+          "au-revised.csv": "bdab67962844"
+        },
+        "issues": [],
+        "market_label_counts": {
+          "AU": {
+            "availability": 3,
+            "packaging": 3,
+            "refill_compatibility": 5,
+            "scent": 4
+          }
+        },
+        "rule_version": "v2",
+        "rules_fingerprint": "0728e7536859",
+        "status": "READY_FOR_REVIEW"
+      }
+    },
+    "regional_v2": {
+      "command": [
+        "python3",
+        "feedback_check.py",
+        "samples/uk.csv",
+        "samples/sg.csv",
+        "samples/au-revised.csv"
+      ],
+      "rules_override": "rules/v2.json",
+      "exit_code": 0,
+      "result": {
+        "input_fingerprints": {
+          "au-revised.csv": "bdab67962844",
+          "sg.csv": "d97206686f60",
+          "uk.csv": "8aaba2ca3a35"
+        },
+        "issues": [],
+        "market_label_counts": {
+          "AU": {
+            "availability": 3,
+            "packaging": 3,
+            "refill_compatibility": 5,
+            "scent": 4
+          },
+          "SG": {
+            "availability": 5,
+            "packaging": 5,
+            "scent": 5
+          },
+          "UK": {
+            "availability": 5,
+            "packaging": 5,
+            "scent": 5
+          }
+        },
+        "rule_version": "v2",
+        "rules_fingerprint": "0728e7536859",
+        "status": "READY_FOR_REVIEW"
+      }
+    },
+    "coverage_v1": {
+      "command": [
+        "python3",
+        "feedback_review.py",
+        "samples/uk.csv",
+        "samples/sg.csv",
+        "samples/au.csv"
+      ],
+      "rules_override": "rules/v1.json",
+      "exit_code": 0,
+      "result": {
+        "status": "READY_FOR_REVIEW",
+        "rule_version": "v1",
+        "rules_fingerprint": "76f86e31bd5e",
+        "input_fingerprints": {
+          "uk.csv": "8aaba2ca3a35",
+          "sg.csv": "d97206686f60",
+          "au.csv": "37ef1d7ced9f"
+        },
+        "issues": [],
+        "scanned_records": 45,
+        "flags": [
+          {
+            "code": "COVERAGE_GAP",
+            "batch": "au.csv",
+            "id": "AU-01",
+            "market": "AU",
+            "current_label": "packaging",
+            "suggested_label": "refill_compatibility",
+            "matched_symptom": "does not fit",
+            "feedback": "The refill nozzle does not fit my original bottle."
+          },
+          {
+            "code": "COVERAGE_GAP",
+            "batch": "au.csv",
+            "id": "AU-02",
+            "market": "AU",
+            "current_label": "packaging",
+            "suggested_label": "refill_compatibility",
+            "matched_symptom": "would not seal",
+            "feedback": "The refill would not seal against the original bottle."
+          },
+          {
+            "code": "COVERAGE_GAP",
+            "batch": "au.csv",
+            "id": "AU-04",
+            "market": "AU",
+            "current_label": "packaging",
+            "suggested_label": "refill_compatibility",
+            "matched_symptom": "too wide",
+            "feedback": "The refill cartridge was too wide for my original bottle."
+          },
+          {
+            "code": "COVERAGE_GAP",
+            "batch": "au.csv",
+            "id": "AU-05",
+            "market": "AU",
+            "current_label": "packaging",
+            "suggested_label": "refill_compatibility",
+            "matched_symptom": "did not lock",
+            "feedback": "The refill connector did not lock into my bottle."
+          },
+          {
+            "code": "COVERAGE_GAP",
+            "batch": "au.csv",
+            "id": "AU-06",
+            "market": "AU",
+            "current_label": "packaging",
+            "suggested_label": "refill_compatibility",
+            "matched_symptom": "leaked where it meets",
+            "feedback": "The refill leaked where it meets the neck of the original bottle."
+          }
+        ]
+      }
+    },
+    "coverage_v2_on_original": {
+      "command": [
+        "python3",
+        "feedback_review.py",
+        "samples/uk.csv",
+        "samples/sg.csv",
+        "samples/au.csv"
+      ],
+      "rules_override": "rules/v2.json",
+      "exit_code": 0,
+      "result": {
+        "status": "READY_FOR_REVIEW",
+        "rule_version": "v2",
+        "rules_fingerprint": "0728e7536859",
+        "input_fingerprints": {
+          "uk.csv": "8aaba2ca3a35",
+          "sg.csv": "d97206686f60",
+          "au.csv": "37ef1d7ced9f"
+        },
+        "issues": [],
+        "scanned_records": 45,
+        "flags": [
+          {
+            "code": "LABEL_MISMATCH",
+            "batch": "au.csv",
+            "id": "AU-01",
+            "market": "AU",
+            "current_label": "packaging",
+            "suggested_label": "refill_compatibility",
+            "matched_symptom": "does not fit",
+            "feedback": "The refill nozzle does not fit my original bottle."
+          },
+          {
+            "code": "LABEL_MISMATCH",
+            "batch": "au.csv",
+            "id": "AU-02",
+            "market": "AU",
+            "current_label": "packaging",
+            "suggested_label": "refill_compatibility",
+            "matched_symptom": "would not seal",
+            "feedback": "The refill would not seal against the original bottle."
+          },
+          {
+            "code": "LABEL_MISMATCH",
+            "batch": "au.csv",
+            "id": "AU-04",
+            "market": "AU",
+            "current_label": "packaging",
+            "suggested_label": "refill_compatibility",
+            "matched_symptom": "too wide",
+            "feedback": "The refill cartridge was too wide for my original bottle."
+          },
+          {
+            "code": "LABEL_MISMATCH",
+            "batch": "au.csv",
+            "id": "AU-05",
+            "market": "AU",
+            "current_label": "packaging",
+            "suggested_label": "refill_compatibility",
+            "matched_symptom": "did not lock",
+            "feedback": "The refill connector did not lock into my bottle."
+          },
+          {
+            "code": "LABEL_MISMATCH",
+            "batch": "au.csv",
+            "id": "AU-06",
+            "market": "AU",
+            "current_label": "packaging",
+            "suggested_label": "refill_compatibility",
+            "matched_symptom": "leaked where it meets",
+            "feedback": "The refill leaked where it meets the neck of the original bottle."
+          }
+        ]
+      }
+    },
+    "coverage_v2_after_review": {
+      "command": [
+        "python3",
+        "feedback_review.py",
+        "samples/uk.csv",
+        "samples/sg.csv",
+        "samples/au-revised.csv"
+      ],
+      "rules_override": "rules/v2.json",
+      "exit_code": 0,
+      "result": {
+        "status": "READY_FOR_REVIEW",
+        "rule_version": "v2",
+        "rules_fingerprint": "0728e7536859",
+        "input_fingerprints": {
+          "uk.csv": "8aaba2ca3a35",
+          "sg.csv": "d97206686f60",
+          "au-revised.csv": "bdab67962844"
+        },
+        "issues": [],
+        "scanned_records": 45,
+        "flags": []
+      }
+    },
+    "repository_check": "PASS"
+  },
+  "prepare_check": {
+    "check": "PASS",
+    "scope": "repository configuration",
+    "environment_config_name": "market-feedback-pilot",
+    "commit": "8cec769118f454d72d69b1c0b0ffca6e0d78ea59",
+    "release_check": {
+      "environment_check": "PASS",
+      "sample_result": {
+        "input_fingerprints": {
+          "au-revised.csv": "bdab67962844"
+        },
+        "issues": [],
+        "market_label_counts": {
+          "AU": {
+            "availability": 3,
+            "packaging": 3,
+            "refill_compatibility": 5,
+            "scent": 4
+          }
+        },
+        "rule_version": "v2",
+        "rules_fingerprint": "0728e7536859",
+        "status": "READY_FOR_REVIEW"
+      }
+    },
+    "regional_result": {
+      "input_fingerprints": {
+        "au-revised.csv": "bdab67962844",
+        "sg.csv": "d97206686f60",
+        "uk.csv": "8aaba2ca3a35"
+      },
+      "issues": [],
+      "market_label_counts": {
+        "AU": {
+          "availability": 3,
+          "packaging": 3,
+          "refill_compatibility": 5,
+          "scent": 4
+        },
+        "SG": {
+          "availability": 5,
+          "packaging": 5,
+          "scent": 5
+        },
+        "UK": {
+          "availability": 5,
+          "packaging": 5,
+          "scent": 5
+        }
+      },
+      "rule_version": "v2",
+      "rules_fingerprint": "0728e7536859",
+      "status": "READY_FOR_REVIEW"
+    },
+    "reviewed_coverage": {
+      "status": "READY_FOR_REVIEW",
+      "rule_version": "v2",
+      "rules_fingerprint": "0728e7536859",
+      "input_fingerprints": {
+        "uk.csv": "8aaba2ca3a35",
+        "sg.csv": "d97206686f60",
+        "au-revised.csv": "bdab67962844"
+      },
+      "issues": [],
+      "scanned_records": 45,
+      "flags": []
+    }
+  },
+  "process_variable_check": {
+    "scope": "v2 supplied to the command for verifying the active task code path; no published configuration.",
+    "result": {
+      "check": "PASS",
+      "scope": "active task configuration",
+      "environment_config_name": "market-feedback-pilot",
+      "commit": "8cec769118f454d72d69b1c0b0ffca6e0d78ea59",
+      "release_check": {
+        "environment_check": "PASS",
+        "sample_result": {
+          "input_fingerprints": {
+            "au-revised.csv": "bdab67962844"
+          },
+          "issues": [],
+          "market_label_counts": {
+            "AU": {
+              "availability": 3,
+              "packaging": 3,
+              "refill_compatibility": 5,
+              "scent": 4
+            }
+          },
+          "rule_version": "v2",
+          "rules_fingerprint": "0728e7536859",
+          "status": "READY_FOR_REVIEW"
+        }
+      },
+      "regional_result": {
+        "input_fingerprints": {
+          "au-revised.csv": "bdab67962844",
+          "sg.csv": "d97206686f60",
+          "uk.csv": "8aaba2ca3a35"
+        },
+        "issues": [],
+        "market_label_counts": {
+          "AU": {
+            "availability": 3,
+            "packaging": 3,
+            "refill_compatibility": 5,
+            "scent": 4
+          },
+          "SG": {
+            "availability": 5,
+            "packaging": 5,
+            "scent": 5
+          },
+          "UK": {
+            "availability": 5,
+            "packaging": 5,
+            "scent": 5
+          }
+        },
+        "rule_version": "v2",
+        "rules_fingerprint": "0728e7536859",
+        "status": "READY_FOR_REVIEW"
+      },
+      "reviewed_coverage": {
+        "status": "READY_FOR_REVIEW",
+        "rule_version": "v2",
+        "rules_fingerprint": "0728e7536859",
+        "input_fingerprints": {
+          "uk.csv": "8aaba2ca3a35",
+          "sg.csv": "d97206686f60",
+          "au-revised.csv": "bdab67962844"
+        },
+        "issues": [],
+        "scanned_records": 45,
+        "flags": []
+      }
+    }
+  }
+}

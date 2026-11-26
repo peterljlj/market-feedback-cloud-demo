@@ -40,7 +40,9 @@ Excel 的「区域汇总」和三个市场页可以查看或筛选这 45 条记�
 
 ## Enterprise 如何用同一个环境和 Skill
 
-![Enterprise 目标流程：维护者发布同一环境，三地各开独立任务，区域负责人核对并汇总](docs/images/enterprise-workflow.png)
+![澳洲提出分类变更，英国和新加坡复核，区域负责人批准，维护者发布 v2，三地各自调用同一个 Skill 后交付简报。](docs/images/enterprise-workflow.png)
+
+上半部分说明谁提议、谁复核、谁批准。下半部分说明维护者如何把新版规则交付给三个独立的市场任务，以及区域负责人如何汇总。
 
 1. 管理员授权成员使用 Codex Cloud，并授权维护者管理共享环境。
 2. 维护者在目标工作区创建 `market-feedback-pilot`，选本仓库，设置规则变量。在 **Privacy → Who can use** 选择工作区并发布。
